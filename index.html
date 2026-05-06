@@ -7,24 +7,27 @@
   <meta name="description" content="LeadPilot centralise vos leads, automatise vos relances et vous aide à closer chaque opportunité au bon moment grâce à l'IA." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #09090F;
-      --surface:     #0F0F17;
-      --card:        #16161F;
-      --gold:        #CA8A04;
-      --gold-light:  #F59E0B;
-      --gold-glow:   rgba(245, 158, 11, 0.18);
-      --text:        #F1F5F9;
-      --muted:       #94A3B8;
-      --border:      rgba(255,255,255,0.07);
-      --border-gold: rgba(245,158,11,0.28);
-      --max:         1180px;
-      --r:           20px;
-      --r-sm:        12px;
+      --bg:        #FFFFFF;
+      --surface:   #F8FAFC;
+      --card:      #FFFFFF;
+      --royal:     #2563EB;
+      --royal-dk:  #1D4ED8;
+      --royal-lt:  #3B82F6;
+      --navy:      #0F172A;
+      --grey:      #64748B;
+      --grey-lt:   #94A3B8;
+      --border:    #E2E8F0;
+      --border-bl: rgba(37,99,235,0.25);
+      --blue-glow: rgba(37,99,235,0.10);
+      --text:      #0F172A;
+      --max:       1180px;
+      --r:         18px;
+      --r-sm:      10px;
     }
 
     html { scroll-behavior: smooth; }
@@ -47,45 +50,107 @@
       margin: 0 auto;
     }
 
-    /* ── NAV ── */
+    /* ════════════════════════════════════
+       ANIMATIONS
+    ════════════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes orbDrift {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(20px,-16px) scale(1.03); }
+      66%      { transform: translate(-14px,12px) scale(0.98); }
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.35; transform: scale(0.72); }
+    }
+
+    /* Hero auto-animate */
+    .hero-nav   { animation: slideDown 0.5s 0.05s cubic-bezier(0.16,1,0.3,1) both; }
+    .hero-badge { animation: fadeUp   0.5s 0.15s cubic-bezier(0.16,1,0.3,1) both; }
+    .hero-h1    { animation: fadeUp   0.65s 0.30s cubic-bezier(0.16,1,0.3,1) both; }
+    .hero-sub   { animation: fadeUp   0.6s 0.46s cubic-bezier(0.16,1,0.3,1) both; }
+    .hero-ctas  { animation: fadeUp   0.6s 0.60s cubic-bezier(0.16,1,0.3,1) both; }
+    .hero-stats { animation: slideRight 0.65s 0.75s cubic-bezier(0.16,1,0.3,1) both; }
+
+    /* Scroll-reveal: elements start hidden, JS adds .reveal */
+    .sr {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.65s cubic-bezier(0.16,1,0.3,1);
+    }
+    .sr.reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .sr-delay-1 { transition-delay: 0.10s; }
+    .sr-delay-2 { transition-delay: 0.22s; }
+    .sr-delay-3 { transition-delay: 0.34s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .sr { opacity: 1; transform: none; }
+    }
+
+    /* ════════════════════════════════════
+       NAV
+    ════════════════════════════════════ */
     .nav {
       position: fixed;
-      top: 16px;
+      top: 14px;
       left: 50%;
       transform: translateX(-50%);
-      width: min(var(--max), calc(100% - 48px));
+      width: min(var(--max), calc(100% - 40px));
       z-index: 100;
-      opacity: 0;
-      background: rgba(9,9,15,0.72);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 0 28px;
+      border-radius: 16px;
+      padding: 0 26px;
+      box-shadow: 0 4px 24px rgba(15,23,42,0.06);
     }
 
     .nav-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 66px;
-      gap: 24px;
+      height: 62px;
+      gap: 20px;
     }
 
     .logo {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 19px;
+      gap: 9px;
+      font-size: 18px;
       font-weight: 700;
-      letter-spacing: -0.4px;
+      color: var(--navy);
+      letter-spacing: -0.3px;
     }
 
     .logo-mark {
-      width: 34px;
-      height: 34px;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      border-radius: 9px;
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--royal-lt), var(--royal-dk));
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -95,108 +160,90 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 28px;
     }
-
     .nav-links a {
       font-size: 14px;
       font-weight: 500;
-      color: var(--muted);
-      transition: color 200ms ease;
+      color: var(--grey);
+      transition: color 180ms ease;
     }
-    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover { color: var(--navy); }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
 
-    .btn-ghost {
+    .btn-ghost-nav {
       font-size: 14px;
       font-weight: 500;
-      color: var(--muted);
-      padding: 10px 18px;
+      color: var(--grey);
+      padding: 9px 16px;
       border-radius: var(--r-sm);
-      cursor: pointer;
-      transition: color 200ms ease, background 200ms ease;
+      transition: color 180ms ease, background 180ms ease;
     }
-    .btn-ghost:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .btn-ghost-nav:hover { color: var(--navy); background: var(--surface); }
 
-    .btn-gold-sm {
+    .btn-blue-sm {
       font-size: 14px;
       font-weight: 600;
-      color: #000;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      padding: 10px 22px;
+      color: #fff;
+      background: var(--royal);
+      padding: 9px 20px;
       border-radius: var(--r-sm);
-      cursor: pointer;
-      transition: opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+      transition: background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
     }
-    .btn-gold-sm:hover {
-      opacity: 0.88;
+    .btn-blue-sm:hover {
+      background: var(--royal-dk);
       transform: translateY(-1px);
-      box-shadow: 0 8px 24px var(--gold-glow);
+      box-shadow: 0 6px 20px rgba(37,99,235,0.28);
     }
 
-    /* ── HERO ── */
+    /* ════════════════════════════════════
+       HERO
+    ════════════════════════════════════ */
     .hero {
       position: relative;
       min-height: 100svh;
       display: flex;
       align-items: center;
-      padding: 150px 0 110px;
+      padding: 140px 0 100px;
       overflow: hidden;
+      background: var(--bg);
     }
 
-    /* Animated gradient orbs */
+    /* Subtle orbs */
     .orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(90px);
+      filter: blur(80px);
       pointer-events: none;
-      will-change: transform;
     }
-    .orb-gold {
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(202,138,4,0.20) 0%, transparent 65%);
-      top: -180px; right: -180px;
-      animation: drift 9s ease-in-out infinite;
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(37,99,235,0.10) 0%, transparent 65%);
+      top: -150px; right: -120px;
+      animation: orbDrift 10s ease-in-out infinite;
     }
-    .orb-blue {
-      width: 520px; height: 520px;
-      background: radial-gradient(circle, rgba(59,130,246,0.14) 0%, transparent 65%);
-      bottom: -80px; left: -120px;
-      animation: drift 11s ease-in-out infinite reverse;
-      animation-delay: -4s;
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 65%);
+      bottom: -60px; left: -80px;
+      animation: orbDrift 13s ease-in-out infinite reverse;
+      animation-delay: -5s;
     }
-    .orb-purple {
-      width: 360px; height: 360px;
-      background: radial-gradient(circle, rgba(139,92,246,0.13) 0%, transparent 65%);
-      top: 35%; left: 42%;
-      animation: drift 13s ease-in-out infinite;
-      animation-delay: -7s;
-    }
-    @keyframes drift {
-      0%,100% { transform: translate(0,0) scale(1); }
-      33%      { transform: translate(28px,-22px) scale(1.04); }
-      66%      { transform: translate(-18px,16px) scale(0.97); }
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 65%);
+      top: 40%; left: 38%;
+      animation: orbDrift 16s ease-in-out infinite;
+      animation-delay: -8s;
     }
 
-    /* Mesh + grid */
-    .hero-mesh {
+    /* Dot grid */
+    .hero-dots {
       position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 75% 55% at 72% 18%, rgba(202,138,4,0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 55% 50% at 18% 82%, rgba(59,130,246,0.07) 0%, transparent 60%);
-    }
-    .hero-grid {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
-      background-size: 64px 64px;
-      mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 100%);
+      background-image: radial-gradient(rgba(37,99,235,0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
     }
 
     .hero-inner {
@@ -205,148 +252,145 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 60px;
+      gap: 56px;
     }
 
-    .hero-copy { max-width: 640px; }
+    .hero-copy { max-width: 620px; }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 14px 6px 10px;
+      gap: 7px;
+      padding: 5px 13px 5px 9px;
       border-radius: 100px;
-      border: 1px solid var(--border-gold);
-      background: rgba(202,138,4,0.07);
+      border: 1px solid var(--border-bl);
+      background: rgba(37,99,235,0.06);
       font-size: 13px;
       font-weight: 500;
-      color: var(--gold-light);
-      margin-bottom: 30px;
-      opacity: 0;
+      color: var(--royal);
+      margin-bottom: 28px;
     }
     .badge-dot {
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       border-radius: 50%;
-      background: var(--gold-light);
+      background: var(--royal);
       animation: blink 2s ease-in-out infinite;
     }
-    @keyframes blink {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.4; transform: scale(0.75); }
-    }
 
-    .hero-h1 {
-      font-size: clamp(44px, 5.8vw, 78px);
+    .h1 {
+      font-size: clamp(40px, 5.5vw, 72px);
       font-weight: 700;
-      letter-spacing: -2.5px;
-      line-height: 1.04;
-      margin-bottom: 26px;
-      opacity: 0;
+      letter-spacing: -2.2px;
+      line-height: 1.06;
+      margin-bottom: 24px;
+      color: var(--navy);
     }
     .grad-text {
-      background: linear-gradient(130deg, var(--gold-light) 0%, var(--gold) 55%, #92400E 100%);
+      background: linear-gradient(130deg, var(--royal-lt) 0%, var(--royal-dk) 60%, #1E3A8A 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .hero-sub {
+    .hero-p {
       font-size: 18px;
-      line-height: 1.7;
-      color: var(--muted);
-      max-width: 520px;
-      margin-bottom: 44px;
-      opacity: 0;
+      line-height: 1.72;
+      color: var(--grey);
+      max-width: 500px;
+      margin-bottom: 42px;
     }
 
-    .hero-ctas {
+    .ctas {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
-      opacity: 0;
     }
 
-    .btn-lg-gold {
+    .btn-lg-blue {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
+      gap: 8px;
       font-size: 16px;
       font-weight: 600;
-      color: #000;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      padding: 17px 34px;
-      border-radius: 15px;
-      transition: all 300ms ease;
-      box-shadow: 0 4px 24px rgba(202,138,4,0.28);
+      color: #fff;
+      background: var(--royal);
+      padding: 16px 32px;
+      border-radius: 14px;
+      transition: all 280ms ease;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.25);
     }
-    .btn-lg-gold:hover {
+    .btn-lg-blue:hover {
+      background: var(--royal-dk);
       transform: translateY(-2px);
-      box-shadow: 0 14px 44px rgba(202,138,4,0.38);
+      box-shadow: 0 12px 36px rgba(37,99,235,0.32);
     }
 
-    .btn-lg-ghost {
+    .btn-lg-outline {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
+      gap: 8px;
       font-size: 16px;
       font-weight: 500;
-      color: var(--text);
-      padding: 17px 30px;
-      border-radius: 15px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(12px);
-      transition: all 300ms ease;
+      color: var(--navy);
+      padding: 16px 28px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      transition: all 280ms ease;
     }
-    .btn-lg-ghost:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.14);
+    .btn-lg-outline:hover {
+      border-color: var(--royal);
+      color: var(--royal);
+      background: rgba(37,99,235,0.04);
     }
 
-    /* Stat cards beside hero */
+    /* Stat cards */
     .hero-stats {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       flex-shrink: 0;
-      opacity: 0;
     }
 
     .stat-card {
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(24px) saturate(160%);
-      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r);
-      padding: 22px 30px;
-      min-width: 210px;
+      padding: 20px 28px;
+      min-width: 200px;
+      box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+      transition: border-color 250ms ease, box-shadow 250ms ease;
       position: relative;
       overflow: hidden;
-      transition: border-color 300ms ease;
     }
     .stat-card::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 80% 20%, rgba(202,138,4,0.07), transparent 70%);
-      pointer-events: none;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(180deg, var(--royal-lt), var(--royal-dk));
+      border-radius: 2px 0 0 2px;
     }
-    .stat-card:hover { border-color: var(--border-gold); }
+    .stat-card:hover {
+      border-color: var(--border-bl);
+      box-shadow: 0 6px 24px rgba(37,99,235,0.10);
+    }
     .stat-val {
-      font-size: 36px;
+      font-size: 34px;
       font-weight: 700;
-      letter-spacing: -1.5px;
+      letter-spacing: -1.2px;
       line-height: 1;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
+      color: var(--navy);
     }
-    .stat-lbl {
-      font-size: 13px;
-      color: var(--muted);
-    }
+    .stat-val.blue { color: var(--royal); }
+    .stat-lbl { font-size: 13px; color: var(--grey); }
 
-    /* ── SECTION COMMON ── */
-    .section { padding: 110px 0; }
+    /* ════════════════════════════════════
+       SECTION COMMONS
+    ════════════════════════════════════ */
+    .section { padding: 100px 0; }
 
     .eyebrow {
       display: inline-flex;
@@ -356,133 +400,132 @@
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--gold-light);
-      margin-bottom: 16px;
+      color: var(--royal);
+      margin-bottom: 14px;
     }
     .eyebrow::before {
       content: '';
-      width: 18px; height: 1px;
-      background: var(--gold-light);
+      width: 16px; height: 1.5px;
+      background: var(--royal);
     }
 
     .s-title {
-      font-size: clamp(32px, 4vw, 54px);
+      font-size: clamp(28px, 3.5vw, 48px);
       font-weight: 700;
-      letter-spacing: -1.8px;
-      line-height: 1.08;
-      margin-bottom: 16px;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--navy);
+      margin-bottom: 14px;
     }
     .s-sub {
       font-size: 17px;
-      color: var(--muted);
+      color: var(--grey);
       line-height: 1.72;
-      max-width: 500px;
+      max-width: 480px;
     }
 
-    /* ── FEATURES ── */
+    /* ════════════════════════════════════
+       FEATURES
+    ════════════════════════════════════ */
     .features-sec {
       background: var(--surface);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
-
-    .features-head {
-      text-align: center;
-      margin-bottom: 72px;
-    }
+    .features-head { text-align: center; margin-bottom: 64px; }
     .features-head .s-sub { margin: 0 auto; }
 
     .feat-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
+      gap: 20px;
     }
 
     .feat-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r);
-      padding: 42px 36px 52px;
+      padding: 38px 32px 48px;
       position: relative;
       overflow: hidden;
       cursor: default;
-      opacity: 0;
-      transition: border-color 350ms ease, transform 300ms ease;
-    }
-    .feat-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 25% 25%, rgba(202,138,4,0.09), transparent 55%);
-      opacity: 0;
-      transition: opacity 350ms ease;
-      pointer-events: none;
+      transition: border-color 280ms ease, box-shadow 280ms ease, transform 280ms ease;
     }
     .feat-card:hover {
-      border-color: var(--border-gold);
-      transform: translateY(-5px);
+      border-color: var(--border-bl);
+      box-shadow: 0 8px 32px rgba(37,99,235,0.08);
+      transform: translateY(-4px);
     }
-    .feat-card:hover::after { opacity: 1; }
+    .feat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--royal-lt), var(--royal-dk));
+      opacity: 0;
+      transition: opacity 280ms ease;
+    }
+    .feat-card:hover::before { opacity: 1; }
 
     .feat-icon {
-      width: 54px; height: 54px;
-      border-radius: 15px;
-      background: rgba(202,138,4,0.09);
-      border: 1px solid rgba(202,138,4,0.18);
+      width: 50px; height: 50px;
+      border-radius: 13px;
+      background: rgba(37,99,235,0.08);
+      border: 1px solid rgba(37,99,235,0.15);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--gold-light);
-      margin-bottom: 26px;
+      color: var(--royal);
+      margin-bottom: 22px;
     }
     .feat-title {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 600;
-      letter-spacing: -0.4px;
-      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+      color: var(--navy);
     }
     .feat-text {
       font-size: 15px;
       line-height: 1.72;
-      color: var(--muted);
+      color: var(--grey);
     }
     .feat-num {
       position: absolute;
-      bottom: 18px; right: 24px;
-      font-size: 80px;
+      bottom: 16px; right: 22px;
+      font-size: 72px;
       font-weight: 700;
       letter-spacing: -4px;
-      color: rgba(255,255,255,0.028);
+      color: rgba(15,23,42,0.035);
       line-height: 1;
       pointer-events: none;
       user-select: none;
     }
 
-    /* ── PRICING ── */
-    .pricing-head {
-      text-align: center;
-      margin-bottom: 72px;
-    }
+    /* ════════════════════════════════════
+       PRICING
+    ════════════════════════════════════ */
+    .pricing-head { text-align: center; margin-bottom: 64px; }
     .pricing-head .s-sub { margin: 0 auto; }
 
     .savings-pill {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      margin-top: 20px;
-      padding: 7px 16px;
+      margin-top: 18px;
+      padding: 6px 14px;
       border-radius: 100px;
-      background: rgba(202,138,4,0.08);
-      border: 1px solid var(--border-gold);
+      background: rgba(37,99,235,0.07);
+      border: 1px solid var(--border-bl);
       font-size: 13px;
-      color: var(--muted);
+      color: var(--grey);
     }
-    .savings-pill strong { color: var(--gold-light); }
+    .savings-pill strong { color: var(--royal); }
 
     .price-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
+      gap: 20px;
       align-items: start;
     }
 
@@ -490,32 +533,49 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r);
-      padding: 40px 36px;
+      padding: 38px 32px;
       position: relative;
-      opacity: 0;
-      transition: transform 300ms ease, border-color 300ms ease;
+      transition: transform 280ms ease, box-shadow 280ms ease;
     }
-    .price-card:hover { transform: translateY(-6px); }
+    .price-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(15,23,42,0.08);
+    }
 
     .price-card.feat-plan {
-      background: linear-gradient(155deg, rgba(202,138,4,0.07) 0%, rgba(245,158,11,0.04) 100%);
-      border-color: var(--border-gold);
+      background: var(--navy);
+      border-color: var(--navy);
       transform: scale(1.04);
+      box-shadow: 0 20px 60px rgba(15,23,42,0.18);
     }
-    .price-card.feat-plan:hover { transform: scale(1.04) translateY(-6px); }
+    .price-card.feat-plan:hover {
+      transform: scale(1.04) translateY(-5px);
+      box-shadow: 0 28px 70px rgba(15,23,42,0.22);
+    }
+    .price-card.feat-plan .plan-name,
+    .price-card.feat-plan .plan-desc,
+    .price-card.feat-plan .p-cur,
+    .price-card.feat-plan .p-per,
+    .price-card.feat-plan .plan-feats li { color: rgba(255,255,255,0.65); }
+    .price-card.feat-plan .p-amt { color: #fff; }
+    .price-card.feat-plan .price-divider { background: rgba(255,255,255,0.10); }
+    .price-card.feat-plan .plan-feats li { color: rgba(255,255,255,0.80); }
+    .price-card.feat-plan .ico-check { color: #60A5FA; }
+    .price-card.feat-plan .ico-x { color: rgba(255,255,255,0.25); }
+    .price-card.feat-plan .plan-feats li.off { color: rgba(255,255,255,0.30); }
 
     .pop-badge {
       position: absolute;
-      top: -14px;
+      top: -13px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #000;
+      background: linear-gradient(135deg, var(--royal-lt), var(--royal-dk));
+      color: #fff;
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      padding: 5px 16px;
+      padding: 4px 14px;
       border-radius: 100px;
       white-space: nowrap;
     }
@@ -523,154 +583,177 @@
     .plan-name {
       font-size: 12px;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 14px;
+      color: var(--grey);
+      margin-bottom: 12px;
     }
     .plan-price {
       display: flex;
       align-items: baseline;
-      gap: 3px;
+      gap: 2px;
       margin-bottom: 8px;
       line-height: 1;
     }
-    .p-cur {
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-    .p-amt {
-      font-size: 62px;
-      font-weight: 700;
-      letter-spacing: -3px;
-    }
-    .p-amt.gold-amt {
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .p-per {
-      font-size: 14px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-    .plan-desc {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 26px;
-      line-height: 1.6;
-    }
-    .price-divider {
-      height: 1px;
-      background: var(--border);
-      margin-bottom: 26px;
-    }
+    .p-cur { font-size: 20px; font-weight: 600; color: var(--grey); margin-top: 5px; }
+    .p-amt { font-size: 58px; font-weight: 700; letter-spacing: -3px; color: var(--navy); }
+    .p-per { font-size: 14px; color: var(--grey); margin-top: 5px; }
+    .plan-desc { font-size: 14px; color: var(--grey); margin-bottom: 22px; line-height: 1.6; }
+    .price-divider { height: 1px; background: var(--border); margin-bottom: 22px; }
+
     .plan-feats {
       display: flex;
       flex-direction: column;
-      gap: 13px;
-      margin-bottom: 36px;
+      gap: 11px;
+      margin-bottom: 32px;
     }
     .plan-feats li {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 9px;
       font-size: 14px;
+      color: var(--text);
     }
-    .plan-feats li.off { color: var(--muted); }
-    .ico-check { color: var(--gold-light); flex-shrink: 0; margin-top: 1px; }
-    .ico-x     { color: #44444F; flex-shrink: 0; margin-top: 1px; }
+    .plan-feats li.off { color: var(--grey-lt); }
+    .ico-check { color: var(--royal); flex-shrink: 0; margin-top: 1px; }
+    .ico-x { color: #CBD5E1; flex-shrink: 0; margin-top: 1px; }
 
     .btn-plan {
       display: block;
       width: 100%;
-      padding: 15px;
-      border-radius: 13px;
+      padding: 14px;
+      border-radius: 11px;
       font-size: 15px;
       font-weight: 600;
       text-align: center;
       cursor: pointer;
-      transition: all 250ms ease;
+      transition: all 240ms ease;
     }
     .btn-plan-outline {
-      border: 1px solid var(--border);
-      color: var(--text);
+      border: 1.5px solid var(--border);
+      color: var(--navy);
       background: transparent;
     }
     .btn-plan-outline:hover {
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(255,255,255,0.14);
+      border-color: var(--royal);
+      color: var(--royal);
+      background: rgba(37,99,235,0.04);
     }
-    .btn-plan-gold {
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #000;
+    .btn-plan-white {
+      background: #fff;
+      color: var(--navy);
       border: none;
-      box-shadow: 0 4px 22px rgba(202,138,4,0.30);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
     }
-    .btn-plan-gold:hover {
-      opacity: 0.9;
-      box-shadow: 0 10px 36px rgba(202,138,4,0.42);
+    .btn-plan-white:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+      transform: translateY(-1px);
     }
 
-    /* ── FINAL CTA ── */
+    /* ════════════════════════════════════
+       FINAL CTA
+    ════════════════════════════════════ */
     .cta-sec {
-      padding: 130px 0;
+      padding: 120px 0;
       text-align: center;
       position: relative;
       overflow: hidden;
+      background: var(--navy);
     }
-    .cta-glow {
+    .cta-orb-1 {
       position: absolute;
-      width: 900px; height: 420px;
-      background: radial-gradient(ellipse, rgba(202,138,4,0.10) 0%, transparent 70%);
+      width: 700px; height: 380px;
+      background: radial-gradient(ellipse, rgba(37,99,235,0.28) 0%, transparent 70%);
       left: 50%; top: 50%;
       transform: translate(-50%,-50%);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+    .cta-orb-2 {
+      position: absolute;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(99,102,241,0.20) 0%, transparent 70%);
+      right: 10%; top: 10%;
       filter: blur(50px);
       pointer-events: none;
     }
     .cta-inner {
       position: relative;
       z-index: 2;
-      opacity: 0;
     }
     .cta-h2 {
-      font-size: clamp(36px, 5vw, 66px);
+      font-size: clamp(32px, 4.5vw, 58px);
       font-weight: 700;
       letter-spacing: -2px;
-      line-height: 1.05;
-      margin-bottom: 20px;
+      line-height: 1.08;
+      margin-bottom: 18px;
+      color: #fff;
     }
     .cta-p {
       font-size: 18px;
-      color: var(--muted);
-      max-width: 460px;
-      margin: 0 auto 48px;
+      color: rgba(255,255,255,0.60);
+      max-width: 440px;
+      margin: 0 auto 44px;
       line-height: 1.7;
     }
     .cta-btns {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
+    }
+    .btn-cta-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+      background: #fff;
+      padding: 16px 32px;
+      border-radius: 13px;
+      transition: all 280ms ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .btn-cta-white:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.20);
+    }
+    .btn-cta-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      padding: 16px 28px;
+      border-radius: 13px;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      transition: all 280ms ease;
+    }
+    .btn-cta-ghost:hover {
+      background: rgba(255,255,255,0.10);
+      border-color: rgba(255,255,255,0.30);
     }
     .trust-note {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      margin-top: 26px;
+      margin-top: 24px;
       font-size: 13px;
-      color: #475569;
+      color: rgba(255,255,255,0.35);
     }
 
-    /* ── FOOTER ── */
+    /* ════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════ */
     .footer {
       border-top: 1px solid var(--border);
-      padding: 50px 0;
+      padding: 44px 0;
+      background: var(--bg);
     }
     .footer-inner {
       display: flex;
@@ -679,52 +762,46 @@
       gap: 24px;
       flex-wrap: wrap;
     }
-    .footer-copy { font-size: 13px; color: var(--muted); margin-top: 6px; }
-    .footer-nav { display: flex; gap: 26px; }
+    .footer-copy { font-size: 13px; color: var(--grey-lt); margin-top: 6px; }
+    .footer-nav { display: flex; gap: 24px; }
     .footer-nav a {
       font-size: 13px;
-      color: var(--muted);
-      transition: color 200ms ease;
+      color: var(--grey-lt);
+      transition: color 180ms ease;
     }
-    .footer-nav a:hover { color: var(--text); }
+    .footer-nav a:hover { color: var(--navy); }
 
-    /* ── RESPONSIVE ── */
+    /* ════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════ */
     @media (max-width: 1060px) {
       .hero-stats { display: none; }
       .hero-copy  { max-width: 100%; }
     }
     @media (max-width: 900px) {
       .feat-grid  { grid-template-columns: 1fr; }
-      .price-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+      .price-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
       .price-card.feat-plan { transform: none; }
-      .price-card.feat-plan:hover { transform: translateY(-6px); }
+      .price-card.feat-plan:hover { transform: translateY(-5px); }
     }
     @media (max-width: 720px) {
-      .nav-links { display: none; }
-      .btn-ghost  { display: none; }
+      .nav-links  { display: none; }
+      .btn-ghost-nav { display: none; }
       .section    { padding: 80px 0; }
       .cta-sec    { padding: 90px 0; }
-    }
-
-    /* ── REDUCED MOTION ── */
-    @media (prefers-reduced-motion: reduce) {
-      .orb         { animation: none !important; }
-      .badge-dot   { animation: none !important; }
-      *, *::before, *::after { transition-duration: 0.01ms !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══════════════ NAV ═══════════════ -->
-  <nav class="nav" id="js-nav" aria-label="Navigation principale">
+  <!-- ═══ NAV ═══ -->
+  <nav class="nav hero-nav" aria-label="Navigation principale">
     <div class="nav-inner">
       <a href="#" class="logo" aria-label="LeadPilot accueil">
         <div class="logo-mark" aria-hidden="true">
-          <!-- Bolt icon -->
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
             <path d="M13 2L4.5 13H11L10 22L20.5 11H14L13 2Z"
-              fill="#000" stroke="#000" stroke-width="1.5"
+              fill="#fff" stroke="#fff" stroke-width="1.5"
               stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
@@ -738,51 +815,48 @@
       </ul>
 
       <div class="nav-right">
-        <a href="#" class="btn-ghost">Connexion</a>
-        <a href="#pricing" class="btn-gold-sm">Démarrer gratuit</a>
+        <a href="#" class="btn-ghost-nav">Connexion</a>
+        <a href="#pricing" class="btn-blue-sm">Démarrer gratuit</a>
       </div>
     </div>
   </nav>
 
-  <!-- ═══════════════ HERO ═══════════════ -->
+  <!-- ═══ HERO ═══ -->
   <section class="hero" id="hero" aria-labelledby="hero-title">
-    <div class="orb orb-gold" aria-hidden="true"></div>
-    <div class="orb orb-blue"  aria-hidden="true"></div>
-    <div class="orb orb-purple" aria-hidden="true"></div>
-    <div class="hero-mesh" aria-hidden="true"></div>
-    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="orb orb-1" aria-hidden="true"></div>
+    <div class="orb orb-2" aria-hidden="true"></div>
+    <div class="orb orb-3" aria-hidden="true"></div>
+    <div class="hero-dots"  aria-hidden="true"></div>
 
     <div class="wrap">
       <div class="hero-inner">
         <div class="hero-copy">
-          <div class="badge" id="js-badge">
+          <div class="badge hero-badge">
             <span class="badge-dot" aria-hidden="true"></span>
             Nouveau — IA de closing intégrée v2.0
           </div>
 
-          <h1 class="hero-h1" id="hero-title" style="opacity:0">
-            Fermez plus<br/>de deals.<br/>
+          <h1 class="h1 hero-h1" id="hero-title">
+            Fermez plus de deals.<br/>
             <span class="grad-text">En moins de temps.</span>
           </h1>
 
-          <p class="hero-sub" id="js-sub">
+          <p class="hero-p hero-sub">
             LeadPilot centralise tous vos leads, déclenche les bonnes relances
             au bon moment et vous donne les insights pour scorer chaque opportunité.
           </p>
 
-          <div class="hero-ctas" id="js-ctas">
-            <a href="#pricing" class="btn-lg-gold">
-              <!-- Bolt -->
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <div class="ctas hero-ctas">
+            <a href="#pricing" class="btn-lg-blue">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M13 2L4.5 13H11L10 22L20.5 11H14L13 2Z"
                   fill="currentColor" stroke="currentColor"
                   stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               Commencer gratuitement
             </a>
-            <a href="#features" class="btn-lg-ghost">
-              <!-- Play circle -->
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <a href="#features" class="btn-lg-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
                 <path d="M10 8.5l5.5 3.5-5.5 3.5V8.5z" fill="currentColor"/>
               </svg>
@@ -791,10 +865,9 @@
           </div>
         </div>
 
-        <!-- Stats panel -->
         <div class="hero-stats" id="js-stats" aria-label="Statistiques clés">
           <div class="stat-card">
-            <div class="stat-val grad-text">+68%</div>
+            <div class="stat-val blue">+68%</div>
             <div class="stat-lbl">Taux de conversion moyen</div>
           </div>
           <div class="stat-card">
@@ -810,24 +883,19 @@
     </div>
   </section>
 
-  <!-- ═══════════════ FEATURES ═══════════════ -->
+  <!-- ═══ FEATURES ═══ -->
   <section class="features-sec section" id="features" aria-labelledby="feat-title">
     <div class="wrap">
       <div class="features-head">
         <div class="eyebrow" aria-hidden="true">Fonctionnalités</div>
         <h2 class="s-title" id="feat-title">Tout ce qu'il faut<br/>pour closer au sommet</h2>
-        <p class="s-sub">
-          Une plateforme conçue par des closers, pour des closers.
-          Chaque feature est là pour une seule raison : vous faire gagner plus.
-        </p>
+        <p class="s-sub">Une plateforme conçue par des closers, pour des closers. Chaque feature est là pour vous faire gagner plus.</p>
       </div>
 
       <div class="feat-grid" role="list">
-        <!-- Card 1 -->
-        <article class="feat-card" id="js-f1" role="listitem">
+        <article class="feat-card sr" role="listitem">
           <div class="feat-icon" aria-hidden="true">
-            <!-- Grid / pipeline icon -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
               <rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
               <rect x="3" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -837,16 +905,14 @@
           <h3 class="feat-title">Pipeline centralisé</h3>
           <p class="feat-text">
             Tous vos leads — Meta, YouTube, referrals, cold — dans un seul tableau de bord.
-            Visualisez chaque étape, priorisez les opportunités chaudes, ne perdez plus aucun deal.
+            Visualisez chaque étape et priorisez les opportunités chaudes.
           </p>
           <span class="feat-num" aria-hidden="true">01</span>
         </article>
 
-        <!-- Card 2 -->
-        <article class="feat-card" id="js-f2" role="listitem">
+        <article class="feat-card sr sr-delay-1" role="listitem">
           <div class="feat-icon" aria-hidden="true">
-            <!-- Automation / zap icon -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
               <path d="M13 2L4.5 13H11L10 22L20.5 11H14L13 2Z"
                 stroke="currentColor" stroke-width="1.5"
                 stroke-linecap="round" stroke-linejoin="round"/>
@@ -854,17 +920,15 @@
           </div>
           <h3 class="feat-title">Relances automatisées</h3>
           <p class="feat-text">
-            Séquences intelligentes sur SMS, email et WhatsApp déclenchées au bon moment.
+            Séquences intelligentes sur SMS, email et WhatsApp.
             L'IA analyse le comportement du prospect et choisit le canal le plus efficace.
           </p>
           <span class="feat-num" aria-hidden="true">02</span>
         </article>
 
-        <!-- Card 3 -->
-        <article class="feat-card" id="js-f3" role="listitem">
+        <article class="feat-card sr sr-delay-2" role="listitem">
           <div class="feat-icon" aria-hidden="true">
-            <!-- Chart icon -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
               <path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
               <path d="M7 15l4-5 4 3 4-7" stroke="currentColor" stroke-width="1.5"
                 stroke-linecap="round" stroke-linejoin="round"/>
@@ -872,7 +936,7 @@
           </div>
           <h3 class="feat-title">Analytics en temps réel</h3>
           <p class="feat-text">
-            Taux de closing, coût par deal, meilleurs créneaux d'appel, performances par closer.
+            Taux de closing, coût par deal, meilleurs créneaux d'appel.
             Prenez vos décisions sur des données réelles, pas sur des intuitions.
           </p>
           <span class="feat-num" aria-hidden="true">03</span>
@@ -881,29 +945,25 @@
     </div>
   </section>
 
-  <!-- ═══════════════ PRICING ═══════════════ -->
+  <!-- ═══ PRICING ═══ -->
   <section class="section" id="pricing" aria-labelledby="pricing-title" style="background:var(--bg)">
     <div class="wrap">
       <div class="pricing-head">
         <div class="eyebrow" aria-hidden="true">Tarifs</div>
         <h2 class="s-title" id="pricing-title">Simple, transparent,<br/>sans surprise</h2>
-        <p class="s-sub">
-          Choisissez le plan adapté à votre activité. Changez ou annulez quand vous voulez.
-        </p>
+        <p class="s-sub">Choisissez le plan adapté à votre activité. Changez ou annulez quand vous voulez.</p>
         <div class="savings-pill">
-          <!-- Shield check -->
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 12l2 2 4-4" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-              stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           Paiement annuel — <strong>2 mois offerts</strong>
         </div>
       </div>
 
       <div class="price-grid">
-        <!-- ── Starter ── -->
-        <div class="price-card" id="js-p1" aria-labelledby="plan-starter">
+        <!-- Starter -->
+        <div class="price-card sr">
           <div class="plan-name">Starter</div>
           <div class="plan-price">
             <span class="p-cur">€</span>
@@ -912,77 +972,41 @@
           </div>
           <p class="plan-desc">Idéal pour les closers solo qui veulent organiser leur pipeline.</p>
           <div class="price-divider" aria-hidden="true"></div>
-          <ul class="plan-feats" aria-label="Fonctionnalités Starter">
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Jusqu'à 200 leads / mois
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Pipeline kanban
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Relances email
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Dashboard analytics
-            </li>
-            <li class="off">
-              <svg class="ico-x" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              Automatisations IA
-            </li>
-            <li class="off">
-              <svg class="ico-x" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              API &amp; intégrations
-            </li>
+          <ul class="plan-feats">
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Jusqu'à 200 leads / mois</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pipeline kanban</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Relances email</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Dashboard analytics</li>
+            <li class="off"><svg class="ico-x" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Automatisations IA</li>
+            <li class="off"><svg class="ico-x" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>API &amp; intégrations</li>
           </ul>
           <a href="#" class="btn-plan btn-plan-outline">Commencer</a>
         </div>
 
-        <!-- ── Pro (featured) ── -->
-        <div class="price-card feat-plan" id="js-p2" aria-labelledby="plan-pro">
-          <div class="pop-badge" aria-label="Plan le plus populaire">Le plus populaire</div>
+        <!-- Pro -->
+        <div class="price-card feat-plan sr sr-delay-1">
+          <div class="pop-badge">Le plus populaire</div>
           <div class="plan-name">Pro</div>
           <div class="plan-price">
             <span class="p-cur">€</span>
-            <span class="p-amt gold-amt">99</span>
+            <span class="p-amt">99</span>
             <span class="p-per">/mois</span>
           </div>
           <p class="plan-desc">Pour les équipes de closing qui veulent scaler leurs résultats.</p>
           <div class="price-divider" aria-hidden="true"></div>
-          <ul class="plan-feats" aria-label="Fonctionnalités Pro">
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Leads illimités
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Pipeline kanban avancé
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Relances SMS, email &amp; WhatsApp
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <strong>Automatisations IA incluses</strong>
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Jusqu'à 5 closers / équipe
-            </li>
-            <li class="off">
-              <svg class="ico-x" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              API &amp; intégrations custom
-            </li>
+          <ul class="plan-feats">
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Leads illimités</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Pipeline kanban avancé</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Relances SMS, email &amp; WhatsApp</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><strong style="color:#fff">Automatisations IA incluses</strong></li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Jusqu'à 5 closers / équipe</li>
+            <li class="off"><svg class="ico-x" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>API &amp; intégrations custom</li>
           </ul>
-          <a href="#" class="btn-plan btn-plan-gold">Commencer — 14j gratuits</a>
+          <a href="#" class="btn-plan btn-plan-white">Commencer — 14j gratuits</a>
         </div>
 
-        <!-- ── Enterprise ── -->
-        <div class="price-card" id="js-p3" aria-labelledby="plan-enterprise">
+        <!-- Enterprise -->
+        <div class="price-card sr sr-delay-2">
           <div class="plan-name">Enterprise</div>
           <div class="plan-price">
             <span class="p-cur">€</span>
@@ -991,31 +1015,13 @@
           </div>
           <p class="plan-desc">Pour les agences et grandes équipes avec des besoins sur‑mesure.</p>
           <div class="price-divider" aria-hidden="true"></div>
-          <ul class="plan-feats" aria-label="Fonctionnalités Enterprise">
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Tout le plan Pro
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Closers illimités
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              API &amp; webhooks
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Intégrations custom (CRM, Slack…)
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Onboarding dédié &amp; CSM
-            </li>
-            <li>
-              <svg class="ico-check" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              SLA 99.9% &amp; support prioritaire
-            </li>
+          <ul class="plan-feats">
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Tout le plan Pro</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Closers illimités</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>API &amp; webhooks</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Intégrations custom (CRM, Slack…)</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Onboarding dédié &amp; CSM</li>
+            <li><svg class="ico-check" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>SLA 99.9% &amp; support prioritaire</li>
           </ul>
           <a href="#" class="btn-plan btn-plan-outline">Contacter l'équipe</a>
         </div>
@@ -1023,54 +1029,53 @@
     </div>
   </section>
 
-  <!-- ═══════════════ FINAL CTA ═══════════════ -->
+  <!-- ═══ FINAL CTA ═══ -->
   <section class="cta-sec" id="cta" aria-labelledby="cta-title">
-    <div class="cta-glow" aria-hidden="true"></div>
+    <div class="cta-orb-1" aria-hidden="true"></div>
+    <div class="cta-orb-2" aria-hidden="true"></div>
     <div class="wrap">
-      <div class="cta-inner" id="js-cta">
-        <div class="eyebrow" style="justify-content:center" aria-hidden="true">
+      <div class="cta-inner sr">
+        <div class="eyebrow" style="justify-content:center;color:rgba(255,255,255,0.5)" aria-hidden="true">
           Prêt à passer au niveau supérieur ?
         </div>
         <h2 class="cta-h2" id="cta-title">
-          Chaque deal manqué<br/>
-          est un deal pour<br/>
-          <span class="grad-text">vos concurrents.</span>
+          Chaque deal manqué est<br/>un deal pour vos concurrents.
         </h2>
         <p class="cta-p">
           Rejoignez 2 400 closers qui utilisent LeadPilot pour ne plus jamais laisser un lead refroidir.
         </p>
         <div class="cta-btns">
-          <a href="#pricing" class="btn-lg-gold">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <a href="#pricing" class="btn-cta-white">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M13 2L4.5 13H11L10 22L20.5 11H14L13 2Z"
                 fill="currentColor" stroke="currentColor"
                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             Démarrer gratuitement
           </a>
-          <a href="#" class="btn-lg-ghost">Parler à un expert LeadPilot</a>
+          <a href="#" class="btn-cta-ghost">Parler à un expert</a>
         </div>
         <p class="trust-note">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
               stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          Aucune carte bancaire · 14 jours d'essai gratuit · Annulation à tout moment
+          Aucune carte bancaire · 14 jours gratuits · Annulation à tout moment
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <!-- ═══ FOOTER ═══ -->
   <footer class="footer">
     <div class="wrap">
       <div class="footer-inner">
         <div>
-          <a href="#" class="logo" style="margin-bottom:8px" aria-label="LeadPilot accueil">
+          <a href="#" class="logo" style="margin-bottom:6px" aria-label="LeadPilot">
             <div class="logo-mark" style="width:28px;height:28px" aria-hidden="true">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                 <path d="M13 2L4.5 13H11L10 22L20.5 11H14L13 2Z"
-                  fill="#000" stroke="#000" stroke-width="1.5"
+                  fill="#fff" stroke="#fff" stroke-width="1.5"
                   stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
@@ -1088,62 +1093,18 @@
     </div>
   </footer>
 
-  <!-- ═══════════════ FRAMER MOTION ═══════════════ -->
-  <script type="module">
-    import { animate, inView } from 'https://esm.sh/framer-motion@12'
-
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    /* Make everything instantly visible for reduced-motion users */
-    if (motion) {
-      document.querySelectorAll(
-        '#js-badge,#hero-title,#js-sub,#js-ctas,#js-stats,' +
-        '#js-f1,#js-f2,#js-f3,#js-p1,#js-p2,#js-p3,#js-cta'
-      ).forEach(el => { el.style.opacity = '1' })
-      return
-    }
-
-    const ease = [0.16, 1, 0.3, 1]  /* custom spring-like ease */
-
-    /* ── Navbar slide-in ── */
-    animate('#js-nav',
-      { opacity: [0, 1], y: [-18, 0] },
-      { duration: 0.5, delay: 0.05, ease: 'easeOut' }
-    )
-
-    /* ── Hero stagger ── */
-    const heroItems = [
-      ['#js-badge',  { opacity: [0, 1], y: [18, 0] }, 0.15],
-      ['#hero-title',{ opacity: [0, 1], y: [32, 0] }, 0.30],
-      ['#js-sub',    { opacity: [0, 1], y: [22, 0] }, 0.48],
-      ['#js-ctas',   { opacity: [0, 1], y: [18, 0] }, 0.62],
-      ['#js-stats',  { opacity: [0, 1], x: [36, 0] }, 0.78],
-    ]
-    heroItems.forEach(([sel, kf, delay]) => {
-      const el = document.querySelector(sel)
-      if (el) animate(el, kf, { duration: 0.65, delay, ease })
-    })
-
-    /* ── Features — scroll-triggered stagger ── */
-    inView('#features', () => {
-      ;[['#js-f1', 0], ['#js-f2', 0.14], ['#js-f3', 0.28]].forEach(([sel, delay]) => {
-        const el = document.querySelector(sel)
-        if (el) animate(el, { opacity: [0, 1], y: [40, 0] }, { duration: 0.65, delay, ease })
+  <!-- ═══ SCROLL REVEAL (Intersection Observer — aucune dépendance CDN) ═══ -->
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal')
+          observer.unobserve(entry.target)
+        }
       })
-    }, { amount: 0.18 })
+    }, { threshold: 0.15 })
 
-    /* ── Pricing — scroll-triggered stagger ── */
-    inView('#pricing', () => {
-      ;[['#js-p1', 0], ['#js-p2', 0.14], ['#js-p3', 0.28]].forEach(([sel, delay]) => {
-        const el = document.querySelector(sel)
-        if (el) animate(el, { opacity: [0, 1], y: [40, 0] }, { duration: 0.65, delay, ease })
-      })
-    }, { amount: 0.14 })
-
-    /* ── Final CTA ── */
-    inView('#js-cta', () => {
-      animate('#js-cta', { opacity: [0, 1], y: [30, 0] }, { duration: 0.7, ease })
-    }, { amount: 0.28 })
+    document.querySelectorAll('.sr').forEach(el => observer.observe(el))
   </script>
 
 </body>
