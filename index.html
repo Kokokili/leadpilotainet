@@ -204,7 +204,7 @@
       height:490px;
       transform-origin:center bottom;
       transform-style:preserve-3d;
-      transform:rotateX(var(--lid-a, 72deg));
+      transform:rotateX(var(--lid-a, -90deg));
       will-change:transform;
       z-index:3;
     }
@@ -259,6 +259,18 @@
       border-radius:14px 14px 4px 4px;
       backface-visibility:hidden;
       transform:rotateY(180deg) translateZ(.5px);
+      overflow:hidden;
+    }
+    .lt-lid-back::before {
+      content:'';
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+      width:96px; height:96px;
+      background:radial-gradient(circle,rgba(59,130,246,.18),transparent 65%);
+      border-radius:50%;
+    }
+    .lt-lid-back::after {
+      content:''; position:absolute; left:0; right:0; top:0; height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
     }
 
     /* Hinge pieces */
@@ -1136,7 +1148,8 @@ document.querySelectorAll('.kinetic').forEach(el => {
     hrLaptop.style.bottom    = `${bottomPx}px`;
 
     /* ── Lid angle: 72deg (closed) → -5deg (open) ── */
-    const lidAngle = lerp(72, -5, easeOut(p));
+    /* Lid: -90deg (closed flat over keyboard) → -2deg (open vertical, slight back-lean) */
+    const lidAngle = lerp(-90, -2, easeOut(p));
     ltLid.style.transform = `rotateX(${lidAngle.toFixed(2)}deg)`;
 
     /* ── Screen powers on at p > 0.62 ── */
