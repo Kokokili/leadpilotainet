@@ -48,6 +48,7 @@
     @keyframes bounce   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
     @keyframes auroraA  { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,-30px) scale(1.1)} }
     @keyframes auroraB  { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,20px) scale(1.06)} }
+    @keyframes dataFlow { from{stroke-dashoffset:400} to{stroke-dashoffset:0} }
     @keyframes screenOn { from{opacity:.95;filter:brightness(.2) blur(4px)} to{opacity:1;filter:brightness(1) blur(0)} }
     @keyframes glowPulse{ 0%,100%{opacity:.55} 50%{opacity:.85} }
 
@@ -111,12 +112,18 @@
       justify-content:flex-start;
     }
 
-    /* Aurora bg */
-    .hr-aurora { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-    .hr-ao {  position:absolute; border-radius:50%; filter:blur(80px); }
-    .hr-ao-1 { width:700px; height:600px; background:radial-gradient(ellipse,rgba(37,99,235,.12),transparent 65%); top:-200px; left:-150px; animation:auroraA 22s ease-in-out infinite; }
-    .hr-ao-2 { width:500px; height:500px; background:radial-gradient(ellipse,rgba(99,102,241,.09),transparent 65%); top:60px; right:-120px; animation:auroraB 18s ease-in-out infinite; }
-    .hr-grid { position:absolute; inset:0; pointer-events:none; background-image:radial-gradient(rgba(37,99,235,.08) 1px,transparent 1px); background-size:28px 28px; mask-image:radial-gradient(ellipse 80% 80% at 50% 40%,black,transparent); }
+    /* Data-lines canvas background */
+    #dl-canvas {
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      pointer-events:none;
+      z-index:0;
+    }
+    /* Subtle vignette to fade edges */
+    .hr-vignette {
+      position:absolute; inset:0; pointer-events:none; z-index:1;
+      background:radial-gradient(ellipse 90% 70% at 50% 30%, transparent 40%, rgba(255,255,255,.92) 100%);
+    }
 
     /* ── Hero text layer ── */
     .hr-text {
@@ -660,12 +667,9 @@
 <div id="hero-root">
   <div class="hr-pin">
 
-    <!-- Aurora background -->
-    <div class="hr-aurora" aria-hidden="true">
-      <div class="hr-ao hr-ao-1"></div>
-      <div class="hr-ao hr-ao-2"></div>
-    </div>
-    <div class="hr-grid" aria-hidden="true"></div>
+    <!-- Animated data-lines canvas background -->
+    <canvas id="dl-canvas" aria-hidden="true"></canvas>
+    <div class="hr-vignette" aria-hidden="true"></div>
 
     <!-- ── Hero text (fades out as you scroll) ── -->
     <div class="hr-text" id="hr-text">
@@ -1215,6 +1219,148 @@ if (magBtn && window.matchMedia('(pointer: fine)').matches) {
   });
   magBtn.addEventListener('mouseleave', () => { magBtn.style.transform = ''; });
 }
+
+/* ══════════════════ DATA-LINES CANVAS ANIMATION ══════════════════ */
+(function(){
+  const canvas = document.getElementById('dl-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  /* ── Config ── */
+  const NODE_COUNT      = 68;
+  const MAX_EDGE_DIST   = 200;   // px — nodes within this distance get connected
+  const PACKET_SPEED    = 1.4;   // data-packet travel speed
+  const BASE_OPACITY    = 0.13;  // line opacity at max-distance edge
+  const NODE_RADIUS     = 1.6;
+  const SPAWN_INTERVAL  = 28;    // frames between new packets
+  const PALETTE         = ['#2563EB','#3B82F6','#6366F1','#60A5FA','#818CF8'];
+
+  /* ── State ── */
+  let W, H, nodes=[], edges=[], packets=[], frame=0;
+
+  /* Node: {x,y,vx,vy,r} */
+  function makeNode(){
+    return {
+      x  : Math.random()*W,
+      y  : Math.random()*H,
+      vx : (Math.random()-.5)*.38,
+      vy : (Math.random()-.5)*.28,
+      r  : NODE_RADIUS
+    };
+  }
+
+  /* Packet travelling from node a to node b */
+  function makePacket(a,b){
+    const col = PALETTE[Math.floor(Math.random()*PALETTE.length)];
+    return { a, b, t:0, col };
+  }
+
+  function buildNodes(){
+    nodes=[];
+    for(let i=0;i<NODE_COUNT;i++) nodes.push(makeNode());
+  }
+
+  /* Rebuild edge list (called each frame — cheap for N≈68) */
+  function buildEdges(){
+    edges=[];
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<MAX_EDGE_DIST) edges.push({i,j,d});
+      }
+    }
+  }
+
+  function resize(){
+    const pin = canvas.parentElement;
+    W = canvas.width  = pin ? pin.offsetWidth  : window.innerWidth;
+    H = canvas.height = pin ? pin.offsetHeight : window.innerHeight;
+    buildNodes();
+    packets=[];
+  }
+
+  function spawnPacket(){
+    if(edges.length===0) return;
+    const e = edges[Math.floor(Math.random()*edges.length)];
+    packets.push(makePacket(e.i, e.j));
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    /* ── Move nodes, bounce off walls ── */
+    nodes.forEach(n=>{
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0)  { n.x=0;  n.vx*=-1; }
+      if(n.x>W)  { n.x=W;  n.vx*=-1; }
+      if(n.y<0)  { n.y=0;  n.vy*=-1; }
+      if(n.y>H)  { n.y=H;  n.vy*=-1; }
+    });
+
+    buildEdges();
+
+    /* ── Draw edges ── */
+    edges.forEach(({i,j,d})=>{
+      const a = nodes[i], b = nodes[j];
+      const alpha = BASE_OPACITY * (1 - d/MAX_EDGE_DIST);
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = `rgba(37,99,235,${alpha.toFixed(3)})`;
+      ctx.lineWidth   = .65;
+      ctx.stroke();
+    });
+
+    /* ── Draw nodes ── */
+    nodes.forEach(n=>{
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(37,99,235,.22)';
+      ctx.fill();
+    });
+
+    /* ── Spawn & draw data packets ── */
+    if(frame % SPAWN_INTERVAL === 0) spawnPacket();
+
+    packets = packets.filter(p=>{
+      p.t += PACKET_SPEED / Math.max(1, edges.find(e=>
+        (e.i===p.a&&e.j===p.b)||(e.i===p.b&&e.j===p.a)
+      )?.d || MAX_EDGE_DIST);
+
+      if(p.t>=1) return false;
+
+      const a = nodes[p.a], b = nodes[p.b];
+      const px = a.x + (b.x-a.x)*p.t;
+      const py = a.y + (b.y-a.y)*p.t;
+
+      /* Glow */
+      const grd = ctx.createRadialGradient(px,py,0,px,py,7);
+      grd.addColorStop(0, p.col+'cc');
+      grd.addColorStop(1, p.col+'00');
+      ctx.beginPath();
+      ctx.arc(px, py, 7, 0, Math.PI*2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+
+      /* Core dot */
+      ctx.beginPath();
+      ctx.arc(px, py, 2.2, 0, Math.PI*2);
+      ctx.fillStyle = p.col;
+      ctx.fill();
+
+      return true;
+    });
+
+    frame++;
+    requestAnimationFrame(draw);
+  }
+
+  /* ── Init ── */
+  resize();
+  window.addEventListener('resize', resize);
+  draw();
+})();
 </script>
 </body>
 </html>
